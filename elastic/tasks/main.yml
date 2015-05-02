@@ -1,12 +1,23 @@
 ---
+- name: Installing Elastic GPG Keys
+  rpm_key: state=present key=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+  tags:
+    - elastic
+
 - name: Installing Elastic repository file
   template: src=elasticsearch.repo.j2 dest=/etc/yum.repos.d/elasticsearch.repo
-
-- name: Installing Elastic GPG Keys
-  rpm_key: state=present key=https://packages.elasticsearch.org/GPG-KEY-elasticsearch
+  tags:
+    - elastic
 
 - name: Install Elastic packages
-  yum: name=elasticsearch state=latest
+  yum: name={{ item }} state=latest
+  with_items:
+    - elasticsearch
+    - java
+  tags:
+    - elastic
 
 - name: Start Elastic service
   service: name=elasticsearch enabled=yes state=started
+  tags:
+    - elastic

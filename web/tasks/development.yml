@@ -9,6 +9,8 @@
 
 - name: Installing Composer
   shell: curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/bin --filename=composer
+  args:
+    creates: /usr/bin/composer
 
 - name: Create xdebug logs directory
   file: dest=/var/log/xdebug owner={{ http_user }} group={{ http_user }} state=directory recurse=yes

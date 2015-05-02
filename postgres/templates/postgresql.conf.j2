@@ -1,7 +1,6 @@
-postgresql.conf
 # - Connection Settings -
 
-listen_addresses = '*'
+listen_addresses = '{{ '*' if environment == 'development' else 'localhost' }}'
 max_connections = 100
 
 # - Memory -
@@ -36,9 +35,9 @@ log_timezone = '{{ timezone }}'
 datestyle = 'iso, iso'
 timezone = '{{ timezone }}'
 
-lc_messages = 'en_US.UTF-8'
-lc_monetary = 'ru_RU.UTF-8'
-lc_numeric = 'ru_RU.UTF-8'
-lc_time = 'ru_RU.UTF-8'
+lc_messages = '{{ locale_long }}.UTF-8'
+lc_monetary = '{{ locale_long }}.UTF-8'
+lc_numeric = '{{ locale_long }}.UTF-8'
+lc_time = '{{ locale_long }}.UTF-8'
 
 default_text_search_config = 'pg_catalog.english'

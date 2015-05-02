@@ -4,7 +4,7 @@
   notify: run ntpdate
 
 - name: run ntpdate
-  shell: "ntpdate pool.ntp.org"
+  command: "ntpdate pool.ntp.org"
   notify: start ntpd service
 
 - name: start ntpd service
