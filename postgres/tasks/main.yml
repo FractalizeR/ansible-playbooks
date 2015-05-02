@@ -7,8 +7,12 @@
   with_items:
     - postgresql94-server
     - postgresql94-contrib
-    - psycopg2
+    - python-psycopg2
 
+- name: Initializing Postgres database
+  shell: /usr/pgsql-9.4/bin/postgresql94-setup initdb creates=/var/lib/pgsql/9.4/data/PG_VERSION
+  sudo: true
+  sudo_user: postgres
 
 - name: Copying Postgres configuration files
   template: src={{ item.src }} dest={{ item.dest }}
@@ -20,9 +24,6 @@
 
 - name: Starting Postgres service
   service: name=postgresql-9.4 state=started enabled=yes
-
-- name: Initializing Postgres database
-  shell: /usr/pgsql-9.4/bin/postgresql94-setup initdb creates=/var/lib/pgsql/9.4/data/PG_VERSION
 
 - name: Creating Postgres database user
   postgresql_user: name={{ user }} password={{ password }}

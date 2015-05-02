@@ -15,7 +15,9 @@
     - mc
     - ntp
     - git
-    - http://mirror.logol.ru/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+
+- name: Installing EPEL package
+  yum: name=http://mirror.logol.ru/epel/7/x86_64/e/epel-release-7-5.noarch.rpm state=present
 
 - name: Enabling ntpd service
   service: name=ntpd enabled=yes
