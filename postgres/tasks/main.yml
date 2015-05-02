@@ -1,0 +1,35 @@
+---
+- name: Installing Postgres Yum repository package
+  yum: name=http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm state=present
+
+- name: Installing Postgres Yum packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - postgresql94-server
+    - postgresql94-contrib
+    - psycopg2
+
+
+- name: Copying Postgres configuration files
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: postgresql.conf.j2, dest: /var/lib/pgsql/9.4/data/postgresql.conf }
+    - { src: pg_hba.conf.j2, dest: /var/lib/pgsql/9.4/data/pg_hba.conf }
+  notify:
+    - restart postgres
+
+- name: Starting Postgres service
+  service: name=postgresql-9.4 state=started enabled=yes
+
+- name: Initializing Postgres database
+  shell: /usr/pgsql-9.4/bin/postgresql94-setup initdb creates=/var/lib/pgsql/9.4/data/PG_VERSION
+
+- name: Creating Postgres database user
+  postgresql_user: name={{ user }} password={{ password }}
+
+- name: Creating Postgres database
+  postgresql_db: name={{ database }} owner={{ user }}
+
+- name: Installing Postgres database extensions
+  postgresql_ext: name={{ item }} db={{ database }}
+  with_items: "{{ extensions }}"

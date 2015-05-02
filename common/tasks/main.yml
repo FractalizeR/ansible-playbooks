@@ -1,0 +1,29 @@
+---
+- name: Installing common modules
+  yum: name={{ item }} state=latest
+  with_items:
+    - "*"
+    - libselinux-python
+    - libsemanage-python
+    - yum-presto
+    - deltarpm
+    - yum-utils
+    - nano
+    - lsof
+    - net-tools
+    - mlocate
+    - mc
+    - ntp
+    - git
+    - http://mirror.logol.ru/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+
+- name: Enabling ntpd service
+  service: name=ntpd enabled=yes
+
+- name: Copy the ntp.conf template file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  notify:
+    - force ntp update
+
+- name: Setting system timezone
+  file: dest=/etc/localtime state=link src=/usr/share/zoneinfo/{{ timezone }} force=yes

@@ -1,0 +1,18 @@
+---
+- name: Installing PHP XDebug, PHP-Cli, Node and NPM for developers
+  yum: name={{ item }} state=latest
+  with_items:
+    - php-cli
+    - php-pecl-xdebug
+    - nodejs
+    - npm
+
+- name: Installing Composer
+  shell: curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/bin --filename=composer
+
+- name: Create xdebug logs directory
+  file: dest=/var/log/xdebug owner={{ http_user }} group={{ http_user }} state=directory recurse=yes
+
+- name: Copying xdebug configuration files
+  template: src=xdebug.conf.j2 dest=/etc/php.d/15-xdebug.ini
+  notify: restart php-fpm

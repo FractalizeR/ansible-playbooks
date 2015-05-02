@@ -1,0 +1,3 @@
+---
+- name: restart redis
+  service: name=ntpd state=restarted

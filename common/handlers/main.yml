@@ -1,0 +1,11 @@
+---
+- name: force ntp update
+  service: name=ntpd state=stopped
+  notify: run ntpdate
+
+- name: run ntpdate
+  shell: "ntpdate pool.ntp.org"
+  notify: start ntpd service
+
+- name: start ntpd service
+  service: name=ntpd state=started

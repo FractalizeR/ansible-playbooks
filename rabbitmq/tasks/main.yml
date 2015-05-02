@@ -1,0 +1,25 @@
+---
+- name: Installing RabbitMQ repository file
+  template: src=rabbitmq_rabbitmq-server.repo.j2 dest=/etc/yum.repos.d/rabbitmq_rabbitmq-server.repo
+
+- name: Installing RabbitMQ GPG Keys
+  rpm_key: state=present key={{ item }}
+  with_items:
+    - http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+    - https://packagecloud.io/gpg.key
+
+- name: Installing RabbitMQ packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - erlang
+    - rabbitmq-server
+
+- name: Starting RabbitMQ service
+  service: name=rabbitmq-server enabled=yes state=started
+
+- name: Creating RabbitMQ configuration file
+  template: src=rabbitmq.config.j2 dest=/etc/rabbitmq/rabbitmq.config
+  notify: restart rabbitmq
+
+- name: Enable RabbitMQ plugins
+  rabbitmq_plugin: names=rabbitmq_management state=enabled

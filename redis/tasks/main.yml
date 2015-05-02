@@ -1,0 +1,11 @@
+---
+- name: Installing Redis package
+  yum: name=redis state=latest
+
+- name: Starting Redis service
+  service: name=redis state=started
+
+- name: Copy Redis configuration file
+  template: src=redis.conf.j2 dest=/etc/redis.conf
+  notify:
+    - restart redis
