@@ -17,4 +17,4 @@
 
 - name: Copying xdebug configuration files
   template: src=xdebug.conf.j2 dest=/etc/php.d/15-xdebug.ini
-  notify: restart php-fpm
+  notify: Restart php-fpm

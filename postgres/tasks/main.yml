@@ -26,7 +26,7 @@
     - { src: postgresql.conf.j2, dest: /var/lib/pgsql/9.4/data/postgresql.conf }
     - { src: pg_hba.conf.j2, dest: /var/lib/pgsql/9.4/data/pg_hba.conf }
   notify:
-    - restart postgres
+    - Restart postgres
   tags:
     - postgres
 

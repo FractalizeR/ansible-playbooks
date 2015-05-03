@@ -1,11 +1,11 @@
 ---
-- name: force ntp update
+- name: Adjust system clock
   service: name=ntpd state=stopped
-  notify: run ntpdate
+  notify: Adjust system clock - calling ntpdate
 
-- name: run ntpdate
+- name: Adjust system clock - calling ntpdate
   command: "ntpdate pool.ntp.org"
-  notify: start ntpd service
+  notify: Adjust system clock - start service back
 
-- name: start ntpd service
+- name: Adjust system clock - start service back
   service: name=ntpd state=started
