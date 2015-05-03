@@ -1,16 +1,7 @@
----
-- name: Installing RabbitMQ GPG Keys
-  rpm_key: key={{ item }} state=present
-  with_items:
-    - https://packagecloud.io/gpg.key
-    - http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
-  tags:
-    - rabbitmq
-
-- name: Installing RabbitMQ repository file
-  template: src=rabbitmq_rabbitmq-server.repo.j2 dest=/etc/yum.repos.d/rabbitmq_rabbitmq-server.repo
-  tags:
-    - rabbitmq
+- name: Installing RabbitMQ repository
+  shell: curl https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm | sudo bash
+  args:
+    creates: /etc/yum.repos.d/rabbitmq_rabbitmq-server.repo
 
 - name: Installing RabbitMQ packages
   yum: name={{ item }} state=latest

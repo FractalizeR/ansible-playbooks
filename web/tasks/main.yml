@@ -8,7 +8,7 @@
 - name: Enabling REMI repository
   command: yum-config-manager --enable remi remi-php56
 
-- name: Installing PHP, Nginx and Node.JS packages
+- name: Installing PHP and Nginx
   yum: name={{ item }} state=latest
   with_items:
     - nginx
@@ -68,4 +68,4 @@
     - restart php-fpm
 
 - include: development.yml
-  when: environment == "development"
+  when: "environment == 'development'"
