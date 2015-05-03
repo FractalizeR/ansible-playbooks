@@ -116,7 +116,7 @@ pm.max_spare_servers = 35
 ;       anything, but it may not be a good idea to use the .php extension or it
 ;       may conflict with a real PHP file.
 ; Default Value: not set
-{% if environment == 'development' %}
+{% if env_name == 'development' %}
 pm.status_path = /status
 {% endif %}
 

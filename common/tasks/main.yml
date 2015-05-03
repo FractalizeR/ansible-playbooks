@@ -16,6 +16,9 @@
     - ntp
     - git
 
+- name: Setting system timezone
+  file: dest=/etc/localtime state=link src=/usr/share/zoneinfo/{{ timezone }} force=yes
+
 - name: Installing EPEL package
   yum: name=http://mirror.logol.ru/epel/7/x86_64/e/epel-release-7-5.noarch.rpm state=present
 
@@ -26,6 +29,3 @@
   template: src=ntp.conf.j2 dest=/etc/ntp.conf
   notify:
     - force ntp update
-
-- name: Setting system timezone
-  file: dest=/etc/localtime state=link src=/usr/share/zoneinfo/{{ timezone }} force=yes

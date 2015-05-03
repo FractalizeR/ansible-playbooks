@@ -10,7 +10,7 @@ server {
     root /var/www/{{ site_id }}/web;
  
     error_log /var/log/nginx/{{ site_id }}.error.log;
-    access_log /var/log/nginx/{{ site_id }}.access.log {{ 'buffer=16k' if environment == 'development' else '' }};
+    access_log /var/log/nginx/{{ site_id }}.access.log {{ 'buffer=16k' if env_name == 'development' else '' }};
  
     # strip app.php/ prefix if it is present
     rewrite ^/app\.php/?(.*)$ /$1 permanent;

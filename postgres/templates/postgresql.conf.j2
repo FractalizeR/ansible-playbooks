@@ -1,6 +1,6 @@
 # - Connection Settings -
 
-listen_addresses = '{{ '*' if environment == 'development' else 'localhost' }}'
+listen_addresses = '{{ '*' if env_name == 'development' else 'localhost' }}'
 max_connections = 100
 
 # - Memory -

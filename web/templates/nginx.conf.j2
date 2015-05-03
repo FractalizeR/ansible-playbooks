@@ -1,7 +1,7 @@
 user {{ http_user }};
-worker_processes  {{ '1' if environment == 'development' else ansible_processor_cores }};
+worker_processes  {{ '1' if env_name == 'development' else ansible_processor_cores }};
 
-error_log  /var/log/nginx/error.log {{ 'notice' if environment == 'development' else 'error' }};
+error_log  /var/log/nginx/error.log {{ 'notice' if env_name == 'development' else 'error' }};
 
 pid        /run/nginx.pid;
 
@@ -12,13 +12,13 @@ events {
 http {
     default_type           application/octet-stream;
     client_max_body_size   32m;
-    access_log             /var/log/nginx/access.log {{ 'buffer=16k' if environment == 'development' else '' }};
+    access_log             /var/log/nginx/access.log {{ 'buffer=16k' if env_name == 'development' else '' }};
     include                /etc/nginx/mime.types;
     default_type           application/octet-stream;
     log_format  main       '$remote_addr - $remote_user [$time_local] "$request" '
                            '$status $body_bytes_sent "$http_referer" '
                            '"$http_user_agent" "$http_x_forwarded_for"';
-    sendfile               {{ 'off' if environment == 'development' else 'on' }};
+    sendfile               {{ 'off' if env_name == 'development' else 'on' }};
     keepalive_timeout      65;
     fastcgi_read_timeout   900;
 
