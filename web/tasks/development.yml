@@ -18,3 +18,11 @@
 - name: Copying xdebug configuration files
   template: src=xdebug.conf.j2 dest=/etc/php.d/15-xdebug.ini
   notify: Restart php-fpm
+
+- name: Adding website url to hosts IPv4
+  lineinfile: dest=/etc/hosts line="127.0.0.1   {{ item }}"
+  with_items: domains
+
+- name: Adding website url to hosts IPv6
+  lineinfile: dest=/etc/hosts line="::1         {{ item }}"
+  with_items: domains
