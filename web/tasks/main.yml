@@ -25,6 +25,7 @@
     - php-pgsql
     - php-intl
     - php-bcmath
+    - php-xml
 
 - name: Setting permissions for nginx cache folder
   file: dest=/var/lib/nginx owner={{ http_user }} group={{ http_user }} state=directory recurse=yes
