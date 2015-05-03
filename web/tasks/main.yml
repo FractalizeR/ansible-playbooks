@@ -1,12 +1,15 @@
 ---
-- name: Installing PHP and Nginx Yum repositories
-  yum: name={{ item }} state=present
+- name: Importing Nginx and PHP rpm keys
+  rpm_key: key={{ item }}
   with_items:
-    - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
-    - http://nginx.org/packages/rhel/7/noarch/RPMS/nginx-release-rhel-7-0.el7.ngx.noarch.rpm
+    - http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+    - http://nginx.org/keys/nginx_signing.key
 
-- name: Enabling REMI repository
-  command: yum-config-manager --enable remi remi-php56
+- name: Installing Nginx and PHP repositories
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: nginx.repo.j2, dest: /etc/yum.repos.d/nginx.repo }
+    - { src: php.remi.repo.j2, dest: /etc/yum.repos.d/remi.repo }
 
 - name: Installing PHP and Nginx
   yum: name={{ item }} state=latest
@@ -22,12 +25,6 @@
     - php-pgsql
     - php-intl
     - php-bcmath
-
-- name: Starting PHP service
-  service: name=php-fpm state=started enabled=yes
-
-- name: Starting Nginx service
-  service: name=nginx state=started enabled=yes
 
 - name: Setting permissions for nginx cache folder
   file: dest=/var/lib/nginx owner={{ http_user }} group={{ http_user }} state=directory recurse=yes
@@ -66,6 +63,12 @@
     - { src: site.php-fpm.conf.j2, dest: "/etc/php-fpm.d/{{ site_id }}.conf" }
   notify:
     - Restart php-fpm
+
+- name: Starting PHP service
+  service: name=php-fpm state=started enabled=yes
+
+- name: Starting Nginx service
+  service: name=nginx state=started enabled=yes
 
 - include: development.yml
   when: env_name == 'development'
