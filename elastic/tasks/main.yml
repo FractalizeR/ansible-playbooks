@@ -17,6 +17,19 @@
   tags:
     - elastic
 
+- name: Create Elastic directories
+  file: dest={{ item }} owner=elasticsearch group=elasticsearch state=directory recurse=yes
+  with_items:
+    - /var/data/elasticsearch
+    - /var/log/elasticsearch
+  tags:
+    - elastic
+
+- name: Copy Elastic configuration file
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
+  notify:
+    - Restart Elastic
+
 - name: Start Elastic service
   service: name=elasticsearch enabled=yes state=started
   tags:
