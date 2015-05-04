@@ -34,3 +34,7 @@
   service: name=elasticsearch enabled=yes state=started
   tags:
     - elastic
+
+- name: Setting up firewalld for Elastic
+  firewalld: port=9200 permanent=true immediate=true state=enabled zone=public
+  when: env_name == 'development'

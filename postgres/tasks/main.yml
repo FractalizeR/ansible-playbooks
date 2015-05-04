@@ -56,3 +56,7 @@
   with_items: "{{ extensions }}"
   tags:
     - postgres
+
+- name: Setting up firewalld for PostgreSQL
+  firewalld: port=5432 permanent=true immediate=true state=enabled zone=public
+  when: env_name == 'development'

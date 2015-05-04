@@ -26,3 +26,10 @@
   rabbitmq_plugin: names=rabbitmq_management state=enabled
   tags:
     - rabbitmq
+
+- name: Setting up firewalld for RabbitMQ
+  firewalld: port={{ item }} permanent=true immediate=true state=enabled zone=public
+  with_items:
+    - 5672
+    - 15672
+  when: env_name == 'development'

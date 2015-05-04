@@ -9,3 +9,8 @@
   template: src=redis.conf.j2 dest=/etc/redis.conf
   notify:
     - Restart redis
+
+
+- name: Setting up firewalld for Redis
+  firewalld: port=6379 permanent=true immediate=true state=enabled zone=public
+  when: env_name == 'development'
