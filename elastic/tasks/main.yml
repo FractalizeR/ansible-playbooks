@@ -36,5 +36,5 @@
     - elastic
 
 - name: Setting up firewalld for Elastic
-  firewalld: port=9200 permanent=true immediate=true state=enabled zone=public
+  firewalld: port=9200/tcp permanent=true immediate=true state=enabled zone=public
   when: env_name == 'development'

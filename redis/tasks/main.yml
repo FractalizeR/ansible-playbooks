@@ -12,5 +12,5 @@
 
 
 - name: Setting up firewalld for Redis
-  firewalld: port=6379 permanent=true immediate=true state=enabled zone=public
+  firewalld: port=6379/tcp permanent=true immediate=true state=enabled zone=public
   when: env_name == 'development'

@@ -28,7 +28,7 @@
     - rabbitmq
 
 - name: Setting up firewalld for RabbitMQ
-  firewalld: port={{ item }} permanent=true immediate=true state=enabled zone=public
+  firewalld: port={{ item }}/tcp permanent=true immediate=true state=enabled zone=public
   with_items:
     - 5672
     - 15672
