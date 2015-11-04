@@ -2,7 +2,6 @@
 - name: Installing common modules
   yum: name={{ item }} state=latest
   with_items:
-    - "*"
     - libselinux-python
     - libsemanage-python
     - yum-presto
@@ -15,6 +14,9 @@
     - mc
     - ntp
     - git
+
+- name: Upgrade all packages
+  yum: name=* state=latest
 
 - name: Setting system timezone
   file: dest=/etc/localtime state=link src=/usr/share/zoneinfo/{{ timezone }} force=yes
