@@ -1,7 +1,24 @@
-- name: Installing RabbitMQ repository
-  shell: curl https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm | sudo bash
+- name: Downloading RabbitMQ repository installation script
+  get_url: url=https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm dest=/tmp/rabbit-mq-install.sh force=true
+  tags:
+    - rabbitmq
+
+- name: Making RabbitMQ repository installation script executable
+  file: path=/tmp/rabbit-mq-install.sh mode=u+x
+  tags:
+    - rabbitmq
+
+- name: Running RabbitMQ repository installation script
+  shell: /tmp/rabbit-mq-install.sh
   args:
     creates: /etc/yum.repos.d/rabbitmq_rabbitmq-server.repo
+  tags:
+    - rabbitmq
+
+- name: Delete RabbitMQ repository installation script
+  file: path=/tmp/rabbit-mq-install.sh state=absent
+  tags:
+    - rabbitmq
 
 - name: Installing RabbitMQ packages
   yum: name={{ item }} state=latest
@@ -33,3 +50,5 @@
     - 5672
     - 15672
   when: env_name == 'development'
+  tags:
+    - rabbitmq
