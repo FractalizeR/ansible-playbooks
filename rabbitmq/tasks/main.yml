@@ -24,7 +24,7 @@
   yum: name={{ item }} state=latest
   with_items:
     - erlang
-    - rabbitmq-server
+    - rabbitmq-server-3.5.6-1
   tags:
     - rabbitmq
 
