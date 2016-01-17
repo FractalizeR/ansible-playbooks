@@ -7,31 +7,52 @@ server {
     server_tokens off;
  
     server_name {{ domains|join(' ') }};
-    root /var/www/{{ site_id }}/web;
- 
+    root /var/www/{{ site_id }}{{ '' if site_web_folder == '' else '/' ~ site_web_folder }};
+
     error_log /var/log/nginx/{{ site_id }}.error.log;
     access_log /var/log/nginx/{{ site_id }}.access.log combined;
- 
-    # strip app.php/ prefix if it is present
-    rewrite ^/app\.php/?(.*)$ /$1 permanent;
- 
-    location / {
-        index app.php;
-        try_files $uri @rewriteapp;
+
+    location ~* ^.+.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|mid|midi|wav|bmp|rtf|js|swf|map|woff|woff2|ttf|svg|eot)$ {
+        access_log  off;
     }
- 
-    location @rewriteapp {
-        rewrite ^(.*)$ /app.php/$1 last;
-    }
- 
-    # pass the PHP scripts to FastCGI server from upstream phpfcgi
-    location ~ ^/(app|app_dev|config)\.php(/|$) {
-        fastcgi_pass phpfcgi;
-        fastcgi_split_path_info ^(.+\.php)(/.*)$;
-        include fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param  HTTPS off;
-    }
+
+    {% if app_type == 'symfony' %}
+        # strip app.php/ prefix if it is present
+        rewrite ^/app\.php/?(.*)$ /$1 permanent;
+
+        location / {
+            index app.php;
+            try_files $uri @rewriteapp;
+        }
+
+        location @rewriteapp {
+            rewrite ^(.*)$ /app.php/$1 last;
+        }
+
+        # pass the PHP scripts to FastCGI server from upstream phpfcgi
+        location ~ ^/(app|app_dev|config)\.php(/|$) {
+            fastcgi_pass phpfcgi;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS off;
+        }
+    {% endif %}
+
+    {% if app_type == 'regular' or  app_type == '' %}
+        index  index.html index.htm index.php;
+
+        location / {
+            try_files $uri $uri/ /index.php?$uri&$args;
+        }
+
+        location ~ \.php$ {
+            fastcgi_pass phpfcgi;
+            fastcgi_index    index.php;
+            fastcgi_param    SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include    fastcgi_params;
+        }
+    {% endif %}
 }
 
 {% if ssl %}
