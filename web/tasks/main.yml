@@ -41,6 +41,7 @@
     - php-mcrypt
     - php-opcache
     - php-pdo
+    - php-mysqlnd
     - php-pgsql
     - php-intl
     - php-bcmath
