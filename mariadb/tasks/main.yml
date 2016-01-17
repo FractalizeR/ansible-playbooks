@@ -1,0 +1,79 @@
+---
+
+#
+# This project is maintained by:
+#  _    ____          ___      __               ____             __
+# | |  / / /___ _____/ (_)____/ /___ __   __   / __ \____ ______/ /________  ___________  __  ____  __
+# | | / / / __ `/ __  / / ___/ / __ `/ | / /  / /_/ / __ `/ ___/ __/ ___/ / / / ___/ __ \/ / / / / / /
+# | |/ / / /_/ / /_/ / (__  ) / /_/ /| |/ /  / _, _/ /_/ (__  ) /_/ /  / /_/ (__  ) / / / /_/ / /_/ /
+# |___/_/\__,_/\__,_/_/____/_/\__,_/ |___/  /_/ |_|\__,_/____/\__/_/   \__,_/____/_/ /_/\__, /\__, /
+#                                                                                   /____//____/
+#
+# Email: FractalizeR@yandex.ru, vladislav.rastrusny@gmail.com
+# http://www.fractalizer.ru
+#
+# This work is licensed under the Apache 2.0
+# United States License. To view a copy of this license, visit
+# http://www.apache.org/licenses/LICENSE-2.0
+# or send a letter to The Apache Software Foundation Dept. 9660 Los Angeles, CA 90084-9660 U.S.A.
+#
+
+- name: Importing MariaDB RPM keys
+  rpm_key: key=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+  tags:
+    - mariadb
+
+- name: Installing MariaDB repository
+  template: src=MariaDB.repo.j2 dest=/etc/yum.repos.d/MariDB.repo
+  tags:
+    - mariadb
+
+- name: Installing MariaDB Yum packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+    - MariaDB-devel
+    - python-devel
+    - python-pip
+  tags:
+    - mariadb
+
+- name: Installing Python SetupTools
+  pip: name=setuptools state=latest
+
+- name: Installing Python MySQL module for Ansible to operate correctly
+  pip: name=MySQL-python state=latest
+
+- name: Copying MariDB configuration files
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify:
+    - Restart mariadb
+  tags:
+    - mariadb
+
+- name: Starting MariaDb service
+  service: name=mariadb state=started enabled=yes
+  tags:
+    - mariadb
+
+- name: Creating MariaDb database
+  mysql_db: name={{ database }}
+  sudo: yes
+  sudo_user: mysql
+  tags:
+    - mariadb
+
+- name: Creating MariaDb database user
+  mysql_user: name={{ user }} password={{ password }} priv={{database}}.*:all host=%
+  sudo: yes
+  sudo_user: mysql
+  tags:
+    - mariadb
+
+
+- name: Setting up firewalld for MariaDB
+  firewalld: port=3306/tcp permanent=true immediate=true state=enabled zone=public
+  when: env_name == 'development'
+  tags:
+    - mariadb
