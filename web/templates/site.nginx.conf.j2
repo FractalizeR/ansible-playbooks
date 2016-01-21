@@ -39,7 +39,7 @@ server {
         }
     {% endif %}
 
-    {% if app_type == 'regular' or  app_type == '' %}
+    {% if app_type == 'regular' or app_type == '' %}
         index  index.html index.htm index.php;
 
         location / {
