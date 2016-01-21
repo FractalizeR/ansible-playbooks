@@ -72,7 +72,7 @@
   template: src={{ item.src }} dest={{ item.dest }}
   with_items:
     - { src: nginx.conf.j2, dest: /etc/nginx.conf }
-    - { src: site.nginx.conf.j2, dest: "/etc/nginx/conf.d/{{ site_id }}.conf" }
+    - { src: site.nginx.conf.j2, dest: "/etc/nginx/conf.d/{{ project_name_snake }}.conf" }
   notify:
     - Restart nginx
 
@@ -81,7 +81,7 @@
   with_items:
     - { src: php.ini.j2, dest: /etc/php.ini }
     - { src: php-fpm.conf.j2, dest: /etc/php-fpm.conf }
-    - { src: site.php-fpm.conf.j2, dest: "/etc/php-fpm.d/{{ site_id }}.conf" }
+    - { src: site.php-fpm.conf.j2, dest: "/etc/php-fpm.d/{{ project_name_snake }}.conf" }
   notify:
     - Restart php-fpm
 
